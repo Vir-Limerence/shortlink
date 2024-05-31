@@ -1,7 +1,9 @@
 package com.nageoffer.shortlink.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.nageoffer.shortlink.admin.common.convention.result.Result;
 import com.nageoffer.shortlink.admin.common.convention.result.Results;
+import com.nageoffer.shortlink.admin.dto.resp.UserActualRespDTO;
 import com.nageoffer.shortlink.admin.dto.resp.UserRespDTO;
 import com.nageoffer.shortlink.admin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +31,8 @@ public class UserController {
      * 根据用户名查找用户无脱敏信息
      */
     @GetMapping("/actual/{username}")
-    public String getActualUserByUsername(@PathVariable("username") String username){
-        return "Hi " + username;
+    public Result<UserActualRespDTO> getActualUserByUsername(@PathVariable("username") String username){
+        return Results.success(BeanUtil.toBean(userService.getUserByUserName(username), UserActualRespDTO.class));
     }
 
 
