@@ -1,0 +1,44 @@
+dataSources:
+  ds_0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    username: root
+    password: 123456
+    jdbcUrl: jdbc:mysql://118.178.136.102:3306/link_mq?characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+rules:
+  - !SHARDING
+    tables:
+      t_user:
+        # 真实数据节点，比如数据库源以及数据库都是真实存在的
+        actualDataNodes: ds_0.t_user_${0..15}
+        # 分表策略
+        tableStrategy:
+          # 用于单分片键的标准分片场景
+          standard:
+            # 分片键
+            shardingColumn: username
+            # 分片算法 对应rules[0].shardingAlgorithms
+            shardingAlgorithmName: user_table_hash_mod
+      t_group:
+        actualDataNodes: ds_0.t_group_${0..15}
+        tableStrategy:
+          standard:
+            shardingColumn: username
+            shardingAlgorithmName: group_table_hash_mod
+    # 分片算法
+    shardingAlgorithms:
+      # 数据表分片算法
+      user_table_hash_mod:
+        # 根据分片键 hash 分片
+        type: HASH_MOD
+        # 分片数量
+        props:
+          sharding-count: 16
+      group_table_hash_mod:
+        type: HASH_MOD
+        props:
+          sharding-count: 16
+# 展现逻辑 SQL & 真实SQL
+props:
+  sql-show: true
